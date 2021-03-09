@@ -1,7 +1,7 @@
 # Tested algorithms:
 
 1. Clustalw2
-2. Muscle
+2. Muscle https://www.drive5.com/muscle/manual/output_formats.html
 
 # Clustalw2
 
