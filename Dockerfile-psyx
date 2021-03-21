@@ -1,0 +1,15 @@
+FROM debian:10
+
+COPY phyx/. .
+RUN apt-get update; \
+    apt-get -y install autotools-dev autoconf automake cmake libtool liblapack-dev libatlas-cpp-0.6-dev libarmadillo-dev libnlopt-cxx-dev
+RUN apt-get -y install libarmadillo-dev
+RUN apt -y install g++
+RUN cd deps; tar -xvzf armadillo-7.400.2.tgz; cd armadillo-7.400.2; ./configure; make; make install
+
+RUN cd src; \
+    autoconf; \
+    ./configure; \
+    make; \
+    make check; \
+    make install
