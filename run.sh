@@ -1,4 +1,4 @@
 docker run \
-    -v $(pwd)/tree/src:/src \
-    -v $(pwd)/datasets/ncbi:/src/data \
+    -v $(pwd)/src:/src \
+    -v $(pwd)/data:/src/data \
     -it bio:latest sh
