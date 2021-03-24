@@ -1,1 +1,1 @@
-docker build -f Dockerfile-psyx . -t psyx
+docker run -v "$(pwd)/data":/data -it psyx bash
