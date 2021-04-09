@@ -1,18 +1,18 @@
 from Bio import AlignIO
 from Bio import Phylo
 from anytree import Node, RenderTree, AsciiStyle
+from anytree.exporter import DotExporter
 from operator import itemgetter
 
-file = "data/speed_test.raxml.bestTree"
-# file = "data/RAxML_bestTree.sgene_good_unique.tre"
+# file = "data/speed_test.raxml.bestTree"
+file = "data/RAxML_bestTree.sgene_good_unique.tre"
 tree = Phylo.read(file, "newick")
 terminals = tree.get_terminals()
 
-reference_name = terminals[5].name
+reference_name = "MN908947_3"
+# reference_name = terminals[5].name
 names = [terminal.name for terminal in terminals if terminal.name != reference_name]
 rooted_tree = Node(reference_name)
-
-# Phylo.draw_ascii(tree)
 
 def getDistances(parent, children):
     return list(map(lambda x: tree.distance(x, parent), children))
@@ -42,4 +42,6 @@ while len(names):
     # checking whether node has 2 leafs
     if len(current_leaf.children) == 2:
         leafs.remove(current_leaf)
-print(RenderTree(rooted_tree, style=AsciiStyle()).by_attr())
+
+# print(RenderTree(rooted_tree, style=AsciiStyle()).by_attr())
+DotExporter(rooted_tree).to_dotfile("tree.dot")
