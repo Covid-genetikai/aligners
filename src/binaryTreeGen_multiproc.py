@@ -80,7 +80,7 @@ def build_tree(reuse_distances=True):
     MinPair = namedtuple("MinPair", 'distance target leaf')
 
     distances = calc_distances(reuse_distances)
-    distances = distances[distances.gt(0)]  # nulis yra pavercia nulius i NaN
+    distances = distances[distances.gt(0)]  # pavercia nulius i NaN
 
     leaves = [rooted_tree]
 
@@ -118,4 +118,4 @@ def build_tree(reuse_distances=True):
 
 
 if __name__ == "__main__":
-    build_tree(reuse_distances=False)
+    build_tree(reuse_distances=True)
