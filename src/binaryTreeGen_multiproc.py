@@ -17,21 +17,16 @@ logging.basicConfig(format='%(asctime)s %(message)s',
                     level=logging.INFO,
                     datefmt="%Y-%m-%d %H:%M:%S")
 
-# NPROC = 4
-NPROC = multiprocessing.cpu_count()
-logging.info(f"Using {NPROC} CPUs")
-
 tree_filename = "../data/RAxML_bestTree.sgene_good_unique.tre"
 tree = Phylo.read(tree_filename, "newick")
 terminals = tree.get_terminals()
 
 reference_name = "MN908947_3"
-names = [terminal.name for terminal in terminals if terminal.name != reference_name]
+names = [terminal.name for terminal in terminals]
 # names = names[:500]
 
 if reference_name not in names:
     names.append(reference_name)
-
 
 def _calc_distance(leaf):
     """ Helper function to calculate distances between 
@@ -60,10 +55,14 @@ def calc_distances(reuse_distances=True):
     distances_path = Path("distances.csv")
 
     if distances_path.is_file() and reuse_distances:
+        logging.info("Loading distances from file")
         return pd.read_csv(distances_path, index_col=0)
 
-    logging.info("Calculating distances")
-    with ProcessPoolExecutor(NPROC) as pool:
+    nproc = multiprocessing.cpu_count()
+    # nproc = 4
+    logging.info(f"Calculating distances. Using {nproc} CPUs")
+
+    with ProcessPoolExecutor(nproc) as pool:
         results = list(pool.map(_calc_distance, names))
         distances = np.stack(results)
 
@@ -76,20 +75,27 @@ def calc_distances(reuse_distances=True):
 
 
 def build_tree(reuse_distances=True):
-    rooted_tree = Node(reference_name)
     MinPair = namedtuple("MinPair", 'distance target leaf')
 
     distances = calc_distances(reuse_distances)
     distances = distances[distances.gt(0)]  # pavercia nulius i NaN
 
+    # distances = distances[names]
+    # print(distances.shape)
+    # distances = distances.loc[names]
+    # print(distances.shape)
+
+    # Drop ref sgene row to prevent child referencing back to ref sgene
+    distances.drop(reference_name, inplace=True, axis=0)
+
+    rooted_tree = Node(reference_name)
     leaves = [rooted_tree]
 
     logging.info("Building tree")
     while distances.shape[0] > 0:
         min_pair = None
 
-        for leaf in leaves:
-            name = str(leaf.name)
+        for leaf in leaves: 
 
             # Suranda maziausia atstuma didesni uz nuli
             distance = distances[leaf.name].min()
@@ -115,7 +121,6 @@ def build_tree(reuse_distances=True):
     # print(RenderTree(rooted_tree, style=AsciiStyle()).by_attr())
     DotExporter(rooted_tree).to_dotfile("tree.dot")
     logging.info("Done")
-
 
 if __name__ == "__main__":
     build_tree(reuse_distances=True)
