@@ -10,7 +10,7 @@ logging.basicConfig(format='%(asctime)s %(message)s',
                     level=logging.INFO,
                     datefmt="%Y-%m-%d %H:%M:%S")
 
-df = pd.read_csv("../data/ncbi_sgene_good_unique.csv")
+df = pd.read_csv("../data/ncbi_sgene_good_unique_aligned.csv")
 
 N = df.shape[0]     # distance matrix size
 N = 100
@@ -49,7 +49,7 @@ def main():
     distances += distances.T
 
     df_dist = pd.DataFrame(distances, columns=accessions, index=accessions)
-    df_dist.to_csv("distances_lev.csv", index=False)
+    df_dist.to_csv("distances_lev.csv")
 
     logging.info("Done")
 
