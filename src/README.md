@@ -1,7 +1,7 @@
 
 ```
 # RAML distances + Binary tree
-python3 -m pip install anytree
+python3 -m pip install anytree numpy pandas biopython
 python3 binaryTreeGen_multiproc.py 
 ```
 

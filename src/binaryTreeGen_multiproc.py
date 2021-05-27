@@ -21,7 +21,7 @@ tree_filename = "../data/RAxML_bestTree.sgene_good_unique.tre"
 tree = Phylo.read(tree_filename, "newick")
 terminals = tree.get_terminals()
 
-reference_name = "MN908947_3"
+reference_name = "MN908947_3" # 2246_6593532f926e48cc68421ef20a33018c
 names = [terminal.name for terminal in terminals]
 # names = names[:500]
 
